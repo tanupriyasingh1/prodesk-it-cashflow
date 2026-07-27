@@ -23,17 +23,6 @@ update as you go. Built in vanilla JavaScript — no frameworks.
 - Threshold alert: if remaining balance drops below 10% of salary, the balance turns red and a warning banner appears
 - Currency toggle (INR / USD / EUR / GBP) using live rates from the Frankfurter API — all figures are still stored internally in INR, only the display converts
 
-## Running it locally
-
-No build step. Just serve the folder — opening `index.html` directly with
-`file://` will block the fetch calls in some browsers, so use a local server:
-
-```bash
-cd cashflow-ledger
-python3 -m http.server 5500
-```
-
-Then visit `http://localhost:5500`.
 
 ## Deploying
 
