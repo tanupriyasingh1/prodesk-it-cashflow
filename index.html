@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cash-Flow — Personal Ledger</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="desk">
+
+    <div class="ledger" id="ledger">
+
+      <!-- spine + rivets -->
+      <div class="spine" aria-hidden="true">
+        <span class="rivet"></span>
+        <span class="rivet"></span>
+        <span class="rivet"></span>
+        <span class="rivet"></span>
+      </div>
+
+      <header class="ledger-header">
+        <p class="eyebrow">Prodesk IT &middot; Sprint 02</p>
+        <h1>Cash&#8209;Flow Ledger</h1>
+        <p class="subhead">Log what comes in, log what goes out, watch the balance move.</p>
+      </header>
+
+      <!-- warning banner, hidden until balance runs low -->
+      <div class="stamp-banner" id="warningBanner" role="alert" hidden>
+        <span class="stamp-mark">&#9888;</span>
+        <span id="warningText">Balance running low.</span>
+      </div>
+
+      <main class="spread">
+
+        <!-- LEFT PAGE — entry slip -->
+        <section class="page page-left" aria-label="Add entries">
+
+          <div class="slip-block">
+            <h2 class="page-title">Opening Balance</h2>
+            <form id="salaryForm" class="entry-form" novalidate>
+              <label for="salaryInput">Total salary</label>
+              <div class="field-row">
+                <span class="currency-symbol" id="salarySymbol">&#8377;</span>
+                <input
+                  type="number"
+                  id="salaryInput"
+                  name="salary"
+                  min="0"
+                  step="0.01"
+                  placeholder="0.00"
+                  inputmode="decimal"
+                  autocomplete="off"
+                >
+              </div>
+              <button type="submit" class="btn btn-primary">Set salary</button>
+              <p class="field-error" id="salaryError" hidden></p>
+            </form>
+          </div>
+
+          <div class="slip-block">
+            <h2 class="page-title">New Expense</h2>
+            <form id="expenseForm" class="entry-form" novalidate>
+              <label for="expenseName">What was it for</label>
+              <input
+                type="text"
+                id="expenseName"
+                name="expenseName"
+                placeholder="e.g. Groceries"
+                autocomplete="off"
+                maxlength="40"
+              >
+
+              <label for="expenseAmount">Amount</label>
+              <div class="field-row">
+                <span class="currency-symbol" id="expenseSymbol">&#8377;</span>
+                <input
+                  type="number"
+                  id="expenseAmount"
+                  name="expenseAmount"
+                  min="0"
+                  step="0.01"
+                  placeholder="0.00"
+                  inputmode="decimal"
+                  autocomplete="off"
+                >
+              </div>
+
+              <button type="submit" class="btn btn-ink">Add to ledger</button>
+              <p class="field-error" id="expenseError" hidden></p>
+            </form>
+          </div>
+
+          <div class="slip-block">
+            <h2 class="page-title">Currency</h2>
+            <p class="hint">Converts everything on this page. Figures are still stored in INR.</p>
+            <select id="currencySelect" class="currency-select">
+              <option value="INR">₹ INR — Indian Rupee</option>
+              <option value="USD">$ USD — US Dollar</option>
+              <option value="EUR">€ EUR — Euro</option>
+              <option value="GBP">£ GBP — British Pound</option>
+            </select>
+            <p class="rate-note" id="rateNote"></p>
+          </div>
+
+          <div class="slip-block">
+            <button type="button" id="downloadReport" class="btn btn-outline">
+              Download report (PDF)
+            </button>
+          </div>
+
+        </section>
+
+        <!-- RIGHT PAGE — the running ledger -->
+        <section class="page page-right" aria-label="Ledger totals and history">
+
+          <h2 class="page-title">Running Totals</h2>
+
+          <dl class="totals">
+            <div class="totals-row">
+              <dt>Salary</dt>
+              <dd id="totalSalary">&#8377;0.00</dd>
+            </div>
+            <div class="totals-row">
+              <dt>Total expenses</dt>
+              <dd id="totalExpenses" class="ink-red">&#8377;0.00</dd>
+            </div>
+            <div class="totals-row totals-row-balance">
+              <dt>Remaining balance</dt>
+              <dd id="remainingBalance">&#8377;0.00</dd>
+            </div>
+          </dl>
+
+          <div class="chart-frame">
+            <canvas id="balanceChart" width="220" height="220"></canvas>
+            <p class="chart-caption">Balance vs. expenses</p>
+          </div>
+
+          <h2 class="page-title">Entries</h2>
+          <div class="table-wrap">
+            <table class="ledger-table">
+              <thead>
+                <tr>
+                  <th class="col-line">#</th>
+                  <th class="col-name">Expense</th>
+                  <th class="col-amount">Amount</th>
+                  <th class="col-action"></th>
+                </tr>
+              </thead>
+              <tbody id="expenseRows">
+                <!-- rows injected by script.js -->
+              </tbody>
+            </table>
+            <p class="empty-note" id="emptyNote">No entries yet — add your first expense on the left.</p>
+          </div>
+
+        </section>
+
+      </main>
+
+      <footer class="ledger-footer">
+        <span>Entries and salary are saved to this browser automatically.</span>
+      </footer>
+
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="js/script.js"></script>
+</body>
+</html>
