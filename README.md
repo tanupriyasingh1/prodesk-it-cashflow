@@ -52,4 +52,4 @@ No environment variables or build command needed, it's static files.
   changes formatting, so nothing gets lost in translation if the rates
   API is briefly unavailable.
 
-## File structure
+
