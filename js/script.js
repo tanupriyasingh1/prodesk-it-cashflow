@@ -119,7 +119,7 @@ function renderTotals() {
   const balance = remainingBalance();
   remainingBalanceEl.textContent = formatMoney(balance);
 
-  // Phase 3 — threshold alert: under 10% of salary left
+ 
   const isLow = state.salary > 0 && balance < state.salary * 0.1;
 
   balanceRow.classList.toggle("low", isLow);
@@ -181,14 +181,28 @@ function renderAll(newestId) {
 
 
 function updateChart() {
+  const chartCanvas = document.getElementById("balanceChart");
+
+  if (typeof Chart === "undefined") {
+   
+    if (chartCanvas && !chartCanvas.dataset.fallbackShown) {
+      const fallback = document.createElement("p");
+      fallback.className = "chart-caption";
+      fallback.textContent = "Chart couldn't load — check your connection and refresh.";
+      chartCanvas.replaceWith(fallback);
+      chartCanvas.dataset.fallbackShown = "true";
+    }
+    return;
+  }
+
   const expenses = totalExpenses();
-  const balance = Math.max(remainingBalance(), 0); // chart can't show negative slices
+  const balance = Math.max(remainingBalance(), 0); 
 
   const data = [balance, expenses];
   const hasAnyData = state.salary > 0 || expenses > 0;
 
   if (!pieChart) {
-    const ctx = document.getElementById("balanceChart");
+    const ctx = chartCanvas;
     pieChart = new Chart(ctx, {
       type: "pie",
       data: {
@@ -225,6 +239,7 @@ function updateChart() {
 }
 
 
+
 salaryForm.addEventListener("submit", (e) => {
   e.preventDefault();
   hideFieldError(salaryError);
@@ -242,7 +257,7 @@ salaryForm.addEventListener("submit", (e) => {
     return;
   }
 
-
+  
   const rate = fxRates[currentCurrency] || 1;
   state.salary = value / rate;
 
@@ -297,6 +312,7 @@ function deleteExpense(id) {
   saveState();
   renderAll();
 }
+
 
 
 async function fetchRates() {
