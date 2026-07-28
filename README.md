@@ -2,6 +2,9 @@
 
 Sprint 02 deliverable — Prodesk IT.
 
+**Live site:** [prodesk-it-cashflow.vercel.app](https://prodesk-it-cashflow.vercel.app/)
+**Repo:** [github.com/tanupriyasingh1/prodesk-it-cashflow](https://github.com/tanupriyasingh1/prodesk-it-cashflow)
+
 A small budgeting dashboard styled like a physical accounting ledger: enter
 a salary, log expenses, and watch the remaining balance and a pie chart
 update as you go. Built in vanilla JavaScript — no frameworks.
@@ -24,23 +27,11 @@ update as you go. Built in vanilla JavaScript — no frameworks.
 - Currency toggle (INR / USD / EUR / GBP) using live rates from the Frankfurter API — all figures are still stored internally in INR, only the display converts
 
 
-## Deploying
+## Deployed with
 
-Drag-and-drop the folder onto [Netlify](https://app.netlify.com/drop), or
-run `vercel` inside the folder if you have the Vercel CLI installed. No
-environment variables or build command needed — it's static files.
-
-## File structure
-
-```
-cashflow-ledger/
-├── index.html
-├── css/
-│   └── style.css
-├── js/
-│   └── script.js
-└── README.md
-```
+This project is deployed on [Vercel](https://vercel.com), connected
+directly to the `main` branch of this repo — every push auto-deploys.
+No environment variables or build command needed, it's static files.
 
 ## Notes
 
@@ -49,3 +40,5 @@ cashflow-ledger/
 - All money is kept in INR in `localStorage`; switching currency only
   changes formatting, so nothing gets lost in translation if the rates
   API is briefly unavailable.
+
+
